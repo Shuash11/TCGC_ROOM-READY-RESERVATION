@@ -102,10 +102,12 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
-        actionsAlignment: MainAxisAlignment.end,
-        title: const Text('Confirm Reservation'),
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
+          child: AlertDialog(
+            actionsAlignment: MainAxisAlignment.end,
+            title: const Text('Confirm Reservation'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,6 +165,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             child: const Text('Cancel'),
           ),
         ],
+          ),
+        ),
       ),
     );
 
