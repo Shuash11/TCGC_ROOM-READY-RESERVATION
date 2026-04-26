@@ -1,0 +1,33 @@
+name: kaye
+description: Classroom Availability Checker — BSCS 2 Project
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  crypto: ^3.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#1E88E5"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/
