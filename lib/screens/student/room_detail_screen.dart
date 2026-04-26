@@ -123,10 +123,10 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.occupied.withValues(alpha:0.08),
+                color: AppColors.occupied.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                    color: AppColors.occupied.withValues(alpha:0.3)),
+                    color: AppColors.occupied.withOpacity(0.3)),
               ),
               child: const Row(
                 children: [
@@ -297,9 +297,9 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: _statusColor.withValues(alpha:0.08),
+        color: _statusColor.withOpacity(0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _statusColor.withValues(alpha:0.3)),
+        border: Border.all(color: _statusColor.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -402,7 +402,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha:0.1),
+                  color: AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.bookmark_add_outlined,
@@ -609,7 +609,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             onPressed: _isSubmitting || _existingReservation != null ? null : _submitRequest,
             style: _existingReservation != null
                 ? ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.textMuted.withValues(alpha:0.2),
+                    backgroundColor: AppColors.textMuted.withOpacity(0.2),
                     foregroundColor: AppColors.textMuted,
                   )
                 : null,
@@ -633,9 +633,9 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.reserved.withValues(alpha:0.1),
+        color: AppColors.reserved.withOpacity(0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.reserved.withValues(alpha:0.3)),
+        border: Border.all(color: AppColors.reserved.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -732,9 +732,9 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha:0.06),
+        color: AppColors.primary.withOpacity(0.06),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withValues(alpha:0.2)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
       ),
       child: const Row(
         children: [
@@ -768,9 +768,9 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.occupied.withValues(alpha:0.06),
+        color: AppColors.occupied.withOpacity(0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.occupied.withValues(alpha:0.2)),
+        border: Border.all(color: AppColors.occupied.withOpacity(0.2)),
       ),
       child: const Row(
         children: [
@@ -797,9 +797,9 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.available.withValues(alpha:0.08),
+        color: AppColors.available.withOpacity(0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.available.withValues(alpha:0.3)),
+        border: Border.all(color: AppColors.available.withOpacity(0.3)),
       ),
       child: Column(
         children: [

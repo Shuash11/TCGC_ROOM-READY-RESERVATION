@@ -277,9 +277,9 @@ class _SignupScreenState extends State<SignupScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha:0.06),
+        color: AppColors.primary.withOpacity(0.06),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.primary.withValues(alpha:0.15)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
       ),
       child: const Row(
         children: [
@@ -306,9 +306,9 @@ class _SignupScreenState extends State<SignupScreen> {
         padding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.occupied.withValues(alpha:0.08),
+          color: AppColors.occupied.withOpacity(0.08),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.occupied.withValues(alpha:0.3)),
+          border: Border.all(color: AppColors.occupied.withOpacity(0.3)),
         ),
         child: Row(
           children: [

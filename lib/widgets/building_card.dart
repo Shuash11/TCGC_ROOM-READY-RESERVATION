@@ -47,7 +47,7 @@ class BuildingCard extends StatelessWidget {
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha :0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -60,7 +60,7 @@ class BuildingCard extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: _color.withValues(alpha :0.12),
+                color: _color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(

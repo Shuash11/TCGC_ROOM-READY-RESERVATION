@@ -304,9 +304,11 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
   Future<void> _approve() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
-        title: const Text('Approve Request'),
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
+          child: AlertDialog(
+            title: const Text('Approve Request'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,9 +327,9 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.occupied.withValues(alpha:0.08),
+                color: AppColors.occupied.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.occupied.withValues(alpha:0.3)),
+                border: Border.all(color: AppColors.occupied.withOpacity(0.3)),
               ),
               child: const Row(
                 children: [
@@ -359,6 +361,8 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
             child: const Text('Cancel'),
           ),
         ],
+          ),
+        ),
       ),
     );
 
@@ -380,9 +384,11 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
   Future<void> _reject() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
-        title: const Text('Reject Request'),
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
+          child: AlertDialog(
+            title: const Text('Reject Request'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,9 +407,9 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.occupied.withValues(alpha:0.08),
+                color: AppColors.occupied.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.occupied.withValues(alpha:0.3)),
+                border: Border.all(color: AppColors.occupied.withOpacity(0.3)),
               ),
               child: const Row(
                 children: [
@@ -439,6 +445,8 @@ class _RequestAdminCardState extends State<_RequestAdminCard> {
             child: const Text('Cancel'),
           ),
         ],
+          ),
+        ),
       ),
     );
 

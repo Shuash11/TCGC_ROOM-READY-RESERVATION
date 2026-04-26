@@ -83,10 +83,10 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha :0.07),
+                    color: AppColors.primary.withOpacity(0.07),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: AppColors.primary.withValues(alpha :0.2)),
+                        color: AppColors.primary.withOpacity(0.2)),
                   ),
                   child: const Row(
                     children: [

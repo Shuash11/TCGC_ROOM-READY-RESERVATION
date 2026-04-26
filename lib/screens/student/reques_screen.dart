@@ -107,7 +107,7 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? color.withValues(alpha:0.15) : Colors.transparent,
+            color: isSelected ? color.withOpacity(0.15) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -188,7 +188,7 @@ class _RequestCard extends StatelessWidget {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.03),
+            color: Colors.black.withOpacity(0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -251,10 +251,10 @@ class _RequestCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: _statusColor.withValues(alpha:0.1),
+                        color: _statusColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                            color: _statusColor.withValues(alpha:0.3)),
+                            color: _statusColor.withOpacity(0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -304,10 +304,10 @@ class _RequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha:0.05),
+                      color: AppColors.primary.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: AppColors.primary.withValues(alpha:0.15)),
+                          color: AppColors.primary.withOpacity(0.15)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +329,7 @@ class _RequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.available.withValues(alpha:0.08),
+                      color: AppColors.available.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Row(
@@ -358,7 +358,7 @@ class _RequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.occupied.withValues(alpha:0.08),
+                      color: AppColors.occupied.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Row(
@@ -421,9 +421,9 @@ class _RequestCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha:0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha:0.3)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
