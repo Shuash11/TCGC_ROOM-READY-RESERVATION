@@ -8,16 +8,13 @@ class AuthService {
 
   // Returns the Firebase User on success, throws on failure
   Future<UserCredential> signIn(String email, String password) async {
-    print('Attempting to sign in with email: $email');
     try {
       final result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      print('Sign in successful, uid: ${result.user?.uid}');
       return result;
     } on FirebaseAuthException catch (e) {
-      print('FirebaseAuthException: code=${e.code}, message=${e.message}');
       switch (e.code) {
         case 'user-not-found':
           throw FirebaseAuthException(
@@ -38,7 +35,6 @@ class AuthService {
           rethrow;
       }
     } catch (e) {
-      print('Sign in error: $e');
       rethrow;
     }
   }

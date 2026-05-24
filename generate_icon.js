@@ -2,65 +2,83 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-const size = 1024;
-const center = size / 2;
+const S = 512;
+const C = S / 2;
+
+// ── Full icon SVG (with background squircle) ──
+function createFullSvg() {
+  return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="r" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DDD6FE"/>
+    </linearGradient>
+  </defs>
+  <rect width="${S}" height="${S}" rx="112" fill="url(#bg)"/>
+  <g transform="translate(${C}, ${C})">
+    <!-- Stem -->
+    <rect x="-66" y="-148" width="52" height="296" rx="26" fill="url(#r)"/>
+    <!-- Bowl -->
+    <path d="M-14 -148
+             C 110 -148 158 -92 158 -20
+             C 158 50 110 82 46 82
+             C 18 82 -14 66 -14 42"
+          fill="none" stroke="url(#r)" stroke-width="52" stroke-linecap="round"/>
+    <!-- Leg -->
+    <rect x="18" y="40" width="52" height="162" rx="26" transform="rotate(40, 44, 121)" fill="url(#r)"/>
+  </g>
+</svg>`;
+}
+
+// ── Foreground SVG (R only, transparent bg) ──
+function createForegroundSvg() {
+  return `<svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="r" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DDD6FE"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(${C}, ${C})">
+    <rect x="-70" y="-156" width="56" height="312" rx="28" fill="url(#r)"/>
+    <path d="M-14 -156
+             C 118 -156 168 -96 168 -20
+             C 168 54 118 88 50 88
+             C 20 88 -14 70 -14 44"
+          fill="none" stroke="url(#r)" stroke-width="56" stroke-linecap="round"/>
+    <rect x="16" y="40" width="56" height="170" rx="28" transform="rotate(40, 44, 125)" fill="url(#r)"/>
+  </g>
+</svg>`;
+}
 
 async function generateIcon() {
-    const svg = `
-    <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#1E88E5;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
-            </linearGradient>
-        </defs>
-        
-        <rect width="${size}" height="${size}" rx="180" fill="url(#bgGrad)"/>
-        
-        <rect x="280" y="180" width="464" height="80" rx="12" fill="white" opacity="0.95"/>
-        <rect x="280" y="340" width="464" height="80" rx="12" fill="white" opacity="0.95"/>
-        <rect x="280" y="500" width="320" height="80" rx="12" fill="white" opacity="0.95"/>
-        
-        <rect x="280" y="660" width="464" height="80" rx="12" fill="white" opacity="0.95"/>
-        <rect x="280" y="820" width="280" height="80" rx="12" fill="white" opacity="0.95"/>
-        
-        <circle cx="${center}" cy="${center}" r="120" fill="white" opacity="0.2"/>
-        <path d="M${center-60},${center-40} L${center+80},${center-40} M${center-60},${center+20} L${center+80},${center+20} M${center-60},${center+80} L${center+20},${center+80}" 
-              stroke="white" stroke-width="24" stroke-linecap="round" fill="none"/>
-    </svg>`;
+  const assetDir = path.join(__dirname, 'assets', 'icon');
+  if (!fs.existsSync(assetDir)) fs.mkdirSync(assetDir, { recursive: true });
 
-    const svgBuffer = Buffer.from(svg);
-    
-    const outputDir = path.join(__dirname, 'assets', 'icon');
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
-    }
-    
-    await sharp(svgBuffer)
-        .resize(1024, 1024)
-        .png()
-        .toFile(path.join(outputDir, 'app_icon.png'));
-    
-    console.log('Created app_icon.png');
-    
-    await sharp(svgBuffer)
-        .resize(1024, 1024)
-        .png()
-        .toFile(path.join(outputDir, 'app_icon_foreground.png'));
-    
-    console.log('Created app_icon_foreground.png');
-    
-    const sizes = [192, 144, 96, 72, 48, 36];
-    const density = 72;
-    
-    for (const s of sizes) {
-        await sharp(svgBuffer)
-            .resize(s, s)
-            .png()
-            .toFile(path.join(outputDir, `app_icon_${s}.png`));
-    }
-    
-    console.log('All icons generated!');
+  // ── Write the scalable SVG logo ──
+  const svgContent = createFullSvg();
+  fs.writeFileSync(path.join(assetDir, 'logo.svg'), svgContent);
+  console.log('✓ Created logo.svg (scalable vector)');
+
+  // ── Generate launcher PNG (1024px) ──
+  await sharp(Buffer.from(svgContent))
+    .resize(1024, 1024)
+    .png()
+    .toFile(path.join(assetDir, 'app_icon.png'));
+  console.log('✓ Created app_icon.png (1024x1024)');
+
+  // ── Generate foreground PNG for Android adaptive icons ──
+  await sharp(Buffer.from(createForegroundSvg()))
+    .resize(1024, 1024)
+    .png()
+    .toFile(path.join(assetDir, 'app_icon_foreground.png'));
+  console.log('✓ Created app_icon_foreground.png');
+
+  console.log('\n✅ Logo generated successfully!');
 }
 
 generateIcon().catch(console.error);

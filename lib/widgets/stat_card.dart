@@ -26,15 +26,10 @@ class StatCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
+      decoration: AppDecorations.coloredContainer(color),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Icon box — fixed size, never shrinks
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -43,16 +38,12 @@ class StatCard extends StatelessWidget {
             ),
             child: Icon(icon, color: color, size: 18),
           ),
-
           const SizedBox(width: 10),
-
-          // Text — Expanded so it never overflows horizontally
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // FittedBox scales the number down if space is tight
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,

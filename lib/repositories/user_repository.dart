@@ -54,18 +54,14 @@ class UserRepository {
 
   // 3. Login admin
   Future<AppUser?> loginAdmin(String username, String password, String email) async {
-    print('loginAdmin called - username: $username, password: $password, email: $email');
-
     // Static admin username gate (UI-facing) - just validate the username "admin"
     if (username != AppData.adminId) {
       throw Exception('Invalid admin username.');
     }
 
     // Use the provided credentials to sign in to Firebase
-    print('Attempting Firebase sign-in with: $email');
     final userCredential = await AuthService.instance.signIn(email, password);
     final uid = userCredential.user?.uid;
-    print('Firebase sign-in success, uid: $uid');
 
     if (uid == null) {
       throw Exception('Admin sign-in failed. Try again.');

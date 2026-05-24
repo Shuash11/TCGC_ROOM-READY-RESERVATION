@@ -6,6 +6,7 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaye/data/app_data.dart';
 import 'package:kaye/models/user.dart';
 import 'package:kaye/theme/app_theme.dart';
@@ -55,13 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       AppUser? user;
-      // Admin role: use Firebase authentication
       if (_selectedRole == UserRole.admin) {
-        // Construct email from admin ID (admin -> admin@roomready.app)
         final adminEmail = '$id@roomready.app';
         user = await AppData.loginAdmin(id, password, adminEmail);
       } else {
-        // Student role: use Firebase authentication
         user = await AppData.loginStudent(id, password);
       }
 
@@ -72,7 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // Navigate based on role
       if (!mounted) return;
       if (user.isAdmin) {
         Navigator.pushReplacement(context,
@@ -81,10 +78,34 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => const StudentHomeScreen()));
       }
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      switch (e.code) {
+        case 'user-not-found':
+          setState(() => _errorMessage = 'No account found with this email.');
+          break;
+        case 'wrong-password':
+          setState(() => _errorMessage = 'Wrong password. Please try again.');
+          break;
+        case 'invalid-credential':
+          setState(() => _errorMessage = 'Invalid credentials. Please check your input.');
+          break;
+        default:
+          setState(() => _errorMessage = 'Login failed: ${e.message}');
+      }
     } catch (e) {
       setState(() {
         _isLoading    = false;
-        _errorMessage = 'Login failed: $e';
+        final errorStr = e.toString();
+        if (errorStr.contains('Invalid admin username')) {
+          _errorMessage = 'Admin ID must be "admin"';
+        } else if (errorStr.contains('Firestore user doc missing')) {
+          _errorMessage = 'Admin account not properly configured.';
+        } else if (errorStr.contains('not an admin')) {
+          _errorMessage = 'This account is not an admin.';
+        } else {
+          _errorMessage = 'Login failed. Please try again.';
+        }
       });
     }
   }
@@ -227,14 +248,23 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildIdField() {
     return TextFormField(
       controller: _idController,
-      keyboardType: TextInputType.text,
+      keyboardType: _selectedRole == UserRole.admin ? TextInputType.text : TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        labelText: _selectedRole == UserRole.admin ? 'Admin ID' : 'Student ID / Email',
-        hintText: _selectedRole == UserRole.admin ? 'admin' : 'e.g. 2023-00123',
-        prefixIcon: const Icon(Icons.person_outline, size: 20),
+        labelText: _selectedRole == UserRole.admin ? 'Admin ID' : 'Student Email',
+        hintText: _selectedRole == UserRole.admin ? 'admin' : 'e.g. juan@school.edu.ph',
+        prefixIcon: Icon(
+          _selectedRole == UserRole.admin ? Icons.person_outline : Icons.email_outlined,
+          size: 20,
+        ),
       ),
-      validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your ID' : null,
+      validator: (v) {
+        if (v == null || v.trim().isEmpty) return 'Please enter your ${_selectedRole == UserRole.admin ? 'ID' : 'email'}';
+        if (_selectedRole == UserRole.student) {
+          if (!v.contains('@') || !v.contains('.')) return 'Enter a valid email address';
+        }
+        return null;
+      },
     );
   }
 
@@ -263,7 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildHint() {
     final hint = _selectedRole == UserRole.admin
         ? 'Admin login: ID = admin  •  Password = admin123'
-        : 'Use your registered Student ID or email + password.';
+        : 'Use your registered email and password.';
     return Text(
       hint,
       style: const TextStyle(

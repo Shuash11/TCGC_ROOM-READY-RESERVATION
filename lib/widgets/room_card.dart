@@ -15,35 +15,17 @@ class RoomCard extends StatelessWidget {
 
   const RoomCard({super.key, required this.room, this.onTap});
 
-  Color get _statusColor {
-    switch (room.status) {
-      case RoomStatus.available: return AppColors.available;
-      case RoomStatus.occupied:  return AppColors.occupied;
-      case RoomStatus.reserved:  return AppColors.reserved;
-    }
-  }
+  Color get _statusColor => room.statusColor;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+        decoration: AppDecorations.smallCard(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Colored top bar indicating status
             Container(
               height: 5,
               decoration: BoxDecoration(
@@ -51,13 +33,11 @@ class RoomCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Room name + badge
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -72,10 +52,7 @@ class RoomCard extends StatelessWidget {
                       RoomStatusBadge(room: room),
                     ],
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Capacity
                   Row(
                     children: [
                       const Icon(Icons.people_outline,
@@ -90,8 +67,6 @@ class RoomCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  // "Until" time if occupied/reserved
                   if (room.occupiedUntil != null) ...[
                     const SizedBox(height: 4),
                     Row(

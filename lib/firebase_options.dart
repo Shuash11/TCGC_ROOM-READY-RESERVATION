@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -14,38 +15,52 @@ class DefaultFirebaseOptions {
         return ios;
       default:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for web - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+          'DefaultFirebaseOptions have not been configured for $defaultTargetPlatform.',
         );
     }
   }
 
-  // To get your web API key: Go to Firebase Console → Project Settings → Your apps → Web app
-  // For now using Android API key - replace with web API key for production
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: "AIzaSyAVab2wXtsbFNtD0rFuRG1VJg2f-galjXU",
-    appId: "1:1077229952205:web:733639fcef030f8ea19d84",
-    messagingSenderId: "1077229952205",
-    projectId: "room-ready-7f663",
-    authDomain: "room-ready-7f663.firebaseapp.com",
-    storageBucket: "room-ready-7f663.firebasestorage.app",
+  // ── Platform-specific options ────────────────────
+
+  static FirebaseOptions get web => FirebaseOptions(
+    apiKey: _env('FIREBASE_WEB_API_KEY'),
+    appId: _env('FIREBASE_WEB_APP_ID'),
+    messagingSenderId: _env('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: _env('FIREBASE_PROJECT_ID'),
+    authDomain: _env('FIREBASE_WEB_AUTH_DOMAIN'),
+    storageBucket: _env('FIREBASE_STORAGE_BUCKET'),
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: "AIzaSyAVab2wXtsbFNtD0rFuRG1VJg2f-galjXU",
-    appId: "1:1077229952205:android:733639fcef030f8ea19d84",
-    messagingSenderId: "1077229952205",
-    projectId: "room-ready-7f663",
-    storageBucket: "room-ready-7f663.firebasestorage.app",
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: _env('FIREBASE_ANDROID_API_KEY'),
+    appId: _env('FIREBASE_ANDROID_APP_ID'),
+    messagingSenderId: _env('FIREBASE_MESSAGING_SENDER_ID'),
+    projectId: _env('FIREBASE_PROJECT_ID'),
+    storageBucket: _env('FIREBASE_STORAGE_BUCKET'),
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: "YOUR_IOS_API_KEY",
-    appId: "YOUR_IOS_APP_ID",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    iosClientId: "YOUR_IOS_CLIENT_ID",
-    iosBundleId: "com.example.kaye",
+  static FirebaseOptions get ios => throw UnsupportedError(
+    'iOS is not configured. Build for Android or Web instead, '
+    'or set up Firebase for iOS in the Firebase Console.',
   );
+
+  // ── Helper ───────────────────────────────────────
+
+  /// Read a value from the .env file. Throws if missing.
+  static String _env(String key) {
+    if (dotenv.env.isEmpty) {
+      throw Exception(
+        '.env file not loaded. Make sure .env exists at the project root '
+        'and is listed in pubspec.yaml under flutter > assets.',
+      );
+    }
+    final value = dotenv.env[key];
+    if (value == null || value.isEmpty) {
+      throw Exception(
+        'Missing Firebase config "$key" in .env file. '
+        'Copy .env.example to .env and fill in your Firebase credentials.',
+      );
+    }
+    return value;
+  }
 }

@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kaye/theme/app_theme.dart';
 
 enum RoomStatus { available, occupied, reserved }
 
@@ -12,7 +14,7 @@ class Room {
   RoomStatus status;
   OccupancyType? occupancyType;
   String? occupiedUntil;
-  DateTime? reservedDate;  // NEW
+  DateTime? reservedDate;
   String? reservedBy;
   String? reservationPurpose;
 
@@ -28,6 +30,17 @@ class Room {
     this.reservedBy,
     this.reservationPurpose,
   });
+
+  Color get statusColor {
+    switch (status) {
+      case RoomStatus.available:
+        return AppColors.available;
+      case RoomStatus.occupied:
+        return AppColors.occupied;
+      case RoomStatus.reserved:
+        return AppColors.reserved;
+    }
+  }
 
   factory Room.fromMap(Map<String, dynamic> map, String docId) {
     return Room(

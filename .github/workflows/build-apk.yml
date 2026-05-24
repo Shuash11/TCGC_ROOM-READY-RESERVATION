@@ -1,15 +1,19 @@
-name: Build Android APK
+name: Build Flutter App (Android + Windows)
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Allows you to trigger builds manually from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build Debug APK
+  # ─────────────────────────────────────────────
+  # Build Android APK
+  # ─────────────────────────────────────────────
+  build-android:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +26,7 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
-      - name: Cache dependencies
+      - name: Cache pub dependencies
         uses: actions/cache@v4
         with:
           path: ~/.pub-cache
@@ -30,15 +34,84 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-
 
+      - name: Create .env file from secrets
+        run: |
+          cat > .env << EOF
+          FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}
+          FIREBASE_ANDROID_APP_ID=${{ secrets.FIREBASE_ANDROID_APP_ID }}
+          FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}
+          FIREBASE_WEB_APP_ID=${{ secrets.FIREBASE_WEB_APP_ID }}
+          FIREBASE_WEB_AUTH_DOMAIN=${{ secrets.FIREBASE_WEB_AUTH_DOMAIN }}
+          EOF
+
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build debug APK
         run: flutter build apk --debug
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug.apk
+          name: RoomReady-Android-APK
           path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 30
+          compression-level: 0  # APK is already compressed
+
+  # ─────────────────────────────────────────────
+  # Build Windows Desktop EXE
+  # ─────────────────────────────────────────────
+  build-windows:
+    name: Build Windows Desktop
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      - name: Create .env file from secrets
+        shell: pwsh
+        run: |
+          "FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}" | Out-File -FilePath .env -Encoding utf8
+          "FIREBASE_ANDROID_APP_ID=${{ secrets.FIREBASE_ANDROID_APP_ID }}" | Add-Content -Path .env
+          "FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" | Add-Content -Path .env
+          "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" | Add-Content -Path .env
+          "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" | Add-Content -Path .env
+          "FIREBASE_WEB_API_KEY=${{ secrets.FIREBASE_WEB_API_KEY }}" | Add-Content -Path .env
+          "FIREBASE_WEB_APP_ID=${{ secrets.FIREBASE_WEB_APP_ID }}" | Add-Content -Path .env
+          "FIREBASE_WEB_AUTH_DOMAIN=${{ secrets.FIREBASE_WEB_AUTH_DOMAIN }}" | Add-Content -Path .env
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Windows executable
+        run: flutter build windows --debug
+
+      - name: Zip Windows build
+        shell: pwsh
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Debug\* -DestinationPath RoomReady-Windows.zip
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RoomReady-Windows
+          path: RoomReady-Windows.zip
           retention-days: 30

@@ -6,6 +6,7 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaye/data/app_data.dart';
 import 'package:kaye/theme/app_theme.dart';
 
@@ -51,7 +52,6 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _isLoading = false);
 
       if (!mounted) return;
-      // Show success then go back to login
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Account created! You can now log in.'),
@@ -62,10 +62,25 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       );
       Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _isLoading = false);
+      switch (e.code) {
+        case 'email-already-in-use':
+          setState(() => _errorMessage = 'An account with this email already exists.');
+          break;
+        case 'weak-password':
+          setState(() => _errorMessage = 'Password is too weak. Use at least 6 characters.');
+          break;
+        case 'invalid-email':
+          setState(() => _errorMessage = 'Please enter a valid email address.');
+          break;
+        default:
+          setState(() => _errorMessage = 'Registration failed: ${e.message}');
+      }
     } catch (e) {
       setState(() {
         _isLoading    = false;
-        _errorMessage = 'Registration failed: $e';
+        _errorMessage = 'Registration failed. Please try again.';
       });
     }
   }

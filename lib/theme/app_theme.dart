@@ -31,6 +31,80 @@ class AppColors {
 
   // Borders
   static const border = Color(0xFFE2E8F0);
+
+  // Building colors
+  static const buildingAnnex = Color(0xFF6366F1);
+  static const buildingMain  = Color(0xFF0EA5E9);
+  static const buildingTab   = Color(0xFF10B981);
+
+  static Color getBuildingColor(String building) {
+    switch (building) {
+      case 'Annex': return buildingAnnex;
+      case 'Main':  return buildingMain;
+      case 'Tab':   return buildingTab;
+      default:      return primary;
+    }
+  }
+}
+
+class AppDecorations {
+  AppDecorations._();
+
+  static const cardShadow = [
+    BoxShadow(
+      color: Color(0x0D000000),
+      blurRadius: 10,
+      offset: Offset(0, 3),
+    ),
+  ];
+
+  static const smallShadow = [
+    BoxShadow(
+      color: Color(0x0A000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
+  ];
+
+  static BoxDecoration card({
+    Color? borderColor,
+    double borderRadius = 20,
+  }) {
+    return BoxDecoration(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(borderRadius),
+      border: Border.all(color: borderColor ?? AppColors.border),
+      boxShadow: cardShadow,
+    );
+  }
+
+  static BoxDecoration smallCard({
+    Color? borderColor,
+    double borderRadius = 16,
+  }) {
+    return BoxDecoration(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(borderRadius),
+      border: Border.all(color: borderColor ?? AppColors.border),
+      boxShadow: smallShadow,
+    );
+  }
+
+  static BoxDecoration statusBadge(Color color) {
+    return BoxDecoration(
+      color: color.withOpacity(0.12),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: color.withOpacity(0.4)),
+    );
+  }
+
+  static BoxDecoration coloredContainer(Color color, {double opacity = 0.08}) {
+    return BoxDecoration(
+      color: color.withOpacity(opacity),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: color.withOpacity(opacity * 3)),
+    );
+  }
 }
 
 class AppTheme {

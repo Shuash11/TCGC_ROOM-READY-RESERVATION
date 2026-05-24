@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────
 
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:kaye/theme/app_theme.dart';
 
 class BuildingCard extends StatelessWidget {
   final String building;
@@ -21,18 +21,9 @@ class BuildingCard extends StatelessWidget {
     required this.onTap,
   });
 
-  // One letter abbreviation
   String get _abbrev => building[0].toUpperCase();
 
-  // Color per building
-  Color get _color {
-    switch (building) {
-      case 'Annex': return const Color(0xFF6366F1);
-      case 'Main':  return const Color(0xFF0EA5E9);
-      case 'Tab':   return const Color(0xFF10B981);
-      default:      return AppColors.primary;
-    }
-  }
+  Color get _color => AppColors.getBuildingColor(building);
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +32,9 @@ class BuildingCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
+        decoration: AppDecorations.card(),
         child: Row(
           children: [
-            // Letter avatar
             Container(
               width: 56,
               height: 56,
@@ -74,10 +53,7 @@ class BuildingCard extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(width: 16),
-
-            // Building name + sub-label
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,8 +93,6 @@ class BuildingCard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Chevron
             const Icon(Icons.chevron_right, color: AppColors.textMuted),
           ],
         ),

@@ -1,0 +1,77 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─────────────────────────────────────────────
+    // Helper functions
+    // ─────────────────────────────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // ─────────────────────────────────────────────
+    // Rooms
+    // Any authenticated user can read rooms.
+    // Only admins can create, update, or delete.
+    // ─────────────────────────────────────────────
+
+    match /rooms/{roomId} {
+      allow read:   if isAuth();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─────────────────────────────────────────────
+    // Users
+    // Users can read/write their own document.
+    // Admins can read/write any user document.
+    // Users can create their own doc during registration.
+    // ─────────────────────────────────────────────
+
+    match /users/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─────────────────────────────────────────────
+    // Reservation Requests
+    // Students: create with own studentId, read own.
+    // Admins: read all, update (approve/reject).
+    // No deletion allowed.
+    // ─────────────────────────────────────────────
+
+    match /reservation_requests/{requestId} {
+      allow read:   if isAuth() && (resource.data.studentId == request.auth.uid || isAdmin());
+      allow create: if isAuth() && request.resource.data.studentId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Reservations (approved bookings)
+    // Any authenticated user can read (for availability).
+    // Only admins can create, update, or delete.
+    // ─────────────────────────────────────────────
+
+    match /reservations/{reservationId} {
+      allow read:   if isAuth();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}
